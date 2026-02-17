@@ -3,10 +3,8 @@ package com.roncalho.inventory_control.controller;
 import com.roncalho.inventory_control.dto.ProdutoCreateDto;
 import com.roncalho.inventory_control.dto.ProdutoResponseDto;
 import com.roncalho.inventory_control.dto.ProdutoUpdateDto;
-import com.roncalho.inventory_control.model.Produto;
 import com.roncalho.inventory_control.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,7 +26,6 @@ public class ProdutoController {
     public ResponseEntity<ProdutoResponseDto> saveProduto(@Valid @RequestBody ProdutoCreateDto createDto) {
         ProdutoResponseDto responseDto = produtoService.saveProduto(createDto);
         URI location = URI.create("/produtos/"+responseDto.id());
-
         return ResponseEntity.created(location).body(responseDto);
     }
 
