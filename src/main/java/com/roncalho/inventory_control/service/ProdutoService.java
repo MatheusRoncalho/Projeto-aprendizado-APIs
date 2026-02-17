@@ -3,6 +3,7 @@ package com.roncalho.inventory_control.service;
 import com.roncalho.inventory_control.dto.ProdutoCreateDto;
 import com.roncalho.inventory_control.dto.ProdutoResponseDto;
 import com.roncalho.inventory_control.dto.ProdutoUpdateDto;
+import com.roncalho.inventory_control.exceptions.RecursoNaoEncontradoException;
 import com.roncalho.inventory_control.model.Produto;
 import com.roncalho.inventory_control.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -38,16 +39,15 @@ public class ProdutoService {
     }
 
     public ProdutoResponseDto findProdutoById(Long id){
-        Optional<Produto> optionalProduto = produtoRepository.findById(id);
-        if (optionalProduto.isEmpty()) throw new EntityNotFoundException("Produto não encontrado");
-        Produto produto = optionalProduto.get();
+        Produto produto = produtoRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto com ID "+id+" não encontrado"));
         return new ProdutoResponseDto(
                 produto.getId(), produto.getNome(), produto.getPreco(), produto.getQuantidade());
     }
 
     public ProdutoResponseDto updateProduto(Long id, ProdutoUpdateDto dadosUpdateDto){
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto com ID "+id+" não encontrado"));
 
         produto.setNome(dadosUpdateDto.nome());
         produto.setPreco(dadosUpdateDto.preco());
@@ -59,7 +59,7 @@ public class ProdutoService {
 
     public void deleteProduto(Long id){
         Produto produto = produtoRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Produto com ID "+id+" não encontrado"));
         produtoRepository.delete(produto);
     }
 }
