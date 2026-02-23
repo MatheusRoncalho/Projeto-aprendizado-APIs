@@ -1,6 +1,11 @@
 package com.roncalho.inventory_control.service;
 
+import com.roncalho.inventory_control.dto.AdminCreateDto;
+import com.roncalho.inventory_control.dto.AdminResponseDto;
+import com.roncalho.inventory_control.dto.ClienteCreateDto;
+import com.roncalho.inventory_control.dto.ClienteResponseDto;
 import com.roncalho.inventory_control.exceptions.RecursoNaoEncontradoException;
+import com.roncalho.inventory_control.model.Role;
 import com.roncalho.inventory_control.model.Usuario;
 import com.roncalho.inventory_control.repository.UsuarioRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,19 +24,34 @@ public class UsuarioService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public Usuario cadastrarUsuario(String nomeUsuario, String email, String senha){
-        String senhaCriptografada = passwordEncoder.encode(senha);
-        Usuario usuario = new Usuario();
-        usuario.setNomeUsuario(nomeUsuario);
-        usuario.setEmail(email);
-        usuario.setSenha(senhaCriptografada);
-        return usuarioRepository.save(usuario);
+    public ClienteResponseDto cadastrarUsuario(ClienteCreateDto createDto) {
+        Role role = usuarioRepository.findById(1L).isEmpty() ? Role.ADMIN : Role.CLIENTE;
+        Usuario usuario = Usuario.builder()
+                .nomeUsuario(createDto.nomeUsuario())
+                .email(createDto.email())
+                .senha(passwordEncoder.encode(createDto.senha()))
+                .role(role)
+                .build();
+        usuarioRepository.save(usuario);
+        return new ClienteResponseDto(
+                usuario.getId(), usuario.getNomeUsuario(), usuario.getEmail());
+    }
+
+    public AdminResponseDto cadastrarUsuarioAdmin(AdminCreateDto createDto) {
+        Usuario usuario = Usuario.builder()
+                .nomeUsuario(createDto.nomeUsuario())
+                .email(createDto.email())
+                .senha(passwordEncoder.encode(createDto.senha()))
+                .role(createDto.role())
+                .build();
+        usuarioRepository.save(usuario);
+        return new AdminResponseDto(
+                usuario.getId(), usuario.getNomeUsuario(), usuario.getEmail(), usuario.getSenha(), usuario.getRole());
     }
 
     public Usuario buscarPorNomeUsuario(String nomeUsuario){
-        Usuario usuario = usuarioRepository.findByNomeUsuario(nomeUsuario)
+        return usuarioRepository.findByNomeUsuario(nomeUsuario)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuario com nome " + nomeUsuario + " não existe"));
-        return usuario;
     }
 
 }

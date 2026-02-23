@@ -1,10 +1,7 @@
 package com.roncalho.inventory_control.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "usuarios")
@@ -12,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Usuario {
 
     @Id
@@ -26,5 +24,8 @@ public class Usuario {
 
     @Column(nullable = false)
     private String senha;
+
+    @Column(nullable = false)
+    private Role role;
 
 }
