@@ -6,7 +6,6 @@ public record AdminResponseDto(
         Long id,
         String nomeUsuario,
         String email,
-        String senha,
         Role role
 ) {
 }

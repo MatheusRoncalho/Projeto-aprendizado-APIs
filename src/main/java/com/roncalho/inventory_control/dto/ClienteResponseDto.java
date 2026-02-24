@@ -1,8 +1,11 @@
 package com.roncalho.inventory_control.dto;
 
+import com.roncalho.inventory_control.model.Role;
+
 public record ClienteResponseDto(
         Long id,
         String nomeUsuario,
-        String email
+        String email,
+        Role role
 ) {
 }

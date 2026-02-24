@@ -4,6 +4,7 @@ import com.roncalho.inventory_control.dto.ProdutoCreateDto;
 import com.roncalho.inventory_control.dto.ProdutoResponseDto;
 import com.roncalho.inventory_control.dto.ProdutoUpdateDto;
 import com.roncalho.inventory_control.exceptions.RecursoNaoEncontradoException;
+import com.roncalho.inventory_control.mappers.ProdutoMapper;
 import com.roncalho.inventory_control.model.Produto;
 import com.roncalho.inventory_control.repository.ProdutoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,33 +17,31 @@ import java.util.Optional;
 public class ProdutoService {
 
     private final ProdutoRepository produtoRepository;
+    private final ProdutoMapper produtoMapper;
 
-    public ProdutoService(ProdutoRepository produtoRepository) {
+    public ProdutoService(ProdutoRepository produtoRepository, ProdutoMapper produtoMapper) {
         this.produtoRepository = produtoRepository;
+        this.produtoMapper = produtoMapper;
     }
 
     public ProdutoResponseDto saveProduto(ProdutoCreateDto createDto){
-        Produto produto = new Produto();
-        produto.setNome(createDto.nome());
-        produto.setPreco(createDto.preco());
-        produto.setQuantidade(createDto.quantidade());
+        Produto produto = produtoMapper.toProduto(createDto);
         produtoRepository.save(produto);
-        return new ProdutoResponseDto(
-                produto.getId(), produto.getNome(), produto.getPreco(), produto.getQuantidade());
+        return produtoMapper.toProdutoResponseDto(produto);
     }
 
     public List<ProdutoResponseDto> findAllProdutos(){
         List<Produto> produtoList = produtoRepository.findAll();
-        return produtoList.stream()
-                .map(produto -> new ProdutoResponseDto(
-                        produto.getId(), produto.getNome(), produto.getPreco(), produto.getQuantidade())).toList();
+        return produtoList
+                .stream()
+                .map(produtoMapper::toProdutoResponseDto)
+                .toList();
     }
 
     public ProdutoResponseDto findProdutoById(Long id){
         Produto produto = produtoRepository.findById(id)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto com ID "+id+" não encontrado"));
-        return new ProdutoResponseDto(
-                produto.getId(), produto.getNome(), produto.getPreco(), produto.getQuantidade());
+        return produtoMapper.toProdutoResponseDto(produto);
     }
 
     public ProdutoResponseDto updateProduto(Long id, ProdutoUpdateDto dadosUpdateDto){
@@ -53,8 +52,7 @@ public class ProdutoService {
         produto.setPreco(dadosUpdateDto.preco());
         produtoRepository.save(produto);
 
-        return new ProdutoResponseDto(
-                produto.getId(), produto.getNome(), produto.getPreco(), produto.getQuantidade());
+        return produtoMapper.toProdutoResponseDto(produto);
     }
 
     public void deleteProduto(Long id){
