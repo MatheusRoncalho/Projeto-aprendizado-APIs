@@ -3,30 +3,29 @@ package com.roncalho.inventory_control.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "produto")
+@Table(name = "pedido")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Produto {
+public class Pedido {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String nome;
-    
-    @Column(nullable = false)
-    private Double preco;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
-    @Column(nullable = false)
-    private int quantidade;
+    @Column(name = "data_pedido", nullable = false)
+    private LocalDateTime dataPedido;
 
-    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "pedido",  fetch = FetchType.LAZY)
     private Set<Item_pedido> itens;
 }

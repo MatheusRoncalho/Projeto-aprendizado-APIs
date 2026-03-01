@@ -31,7 +31,7 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> resgister(@Valid @RequestBody ClienteCreateDto createDto) {
-        ClienteResponseDto clienteResponseDto = usuarioService.cadastrarUsuario(createDto);
+        ClienteResponseDto clienteResponseDto = usuarioService.cadastrarUsuarioCliente(createDto);
         URI location = URI.create("/auth/register/"+clienteResponseDto.id());
         return ResponseEntity.ok(clienteResponseDto);
     }
@@ -45,7 +45,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UsuarioLoginDto loginDto) {
-        Usuario usuario = usuarioService.buscarPorNomeUsuario(loginDto.nomeUsuario());
+        Usuario usuario = usuarioService.buscarUsuarioPorNome(loginDto.nomeUsuario());
         if (passwordEncoder.matches(loginDto.senha(), usuario.getSenha())) {
             String token = JwtUtil.generateToken(usuario.getEmail());
             return ResponseEntity.ok(Map.of("token", token));

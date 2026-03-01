@@ -3,8 +3,11 @@ package com.roncalho.inventory_control.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,5 +31,8 @@ public class Usuario {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(mappedBy = "usuario")
+    public Set<Pedido> pedidos =  new HashSet<>();
 
 }

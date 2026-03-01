@@ -32,7 +32,7 @@ public class UsuarioService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    public ClienteResponseDto cadastrarUsuario(ClienteCreateDto createDto) {
+    public ClienteResponseDto cadastrarUsuarioCliente(ClienteCreateDto createDto) {
         Role role = usuarioRepository.findById(1L).isEmpty() ? Role.ADMIN : Role.CLIENTE;
         Usuario usuario = clienteMapper.toUsuario(createDto);
         usuario.setSenha(passwordEncoder.encode(createDto.senha()));
@@ -47,19 +47,19 @@ public class UsuarioService {
         return adminMapper.toAdminResponseDto(usuario);
     }
 
-    public Usuario buscarPorNomeUsuario(String nomeUsuario){
+    public Usuario buscarUsuarioPorNome(String nomeUsuario){
         return usuarioRepository.findByNomeUsuario(nomeUsuario)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuario com nome " + nomeUsuario + " não existe"));
     }
 
-    public List<ClienteResponseDto> buscarTodosUsuarios(){
-        return usuarioRepository.findAll()
+    public List<ClienteResponseDto> buscarTodosClientes(){
+        return usuarioRepository.findAllByRole(Role.CLIENTE)
                 .stream()
                 .map(clienteMapper::toClienteResponseDto)
                 .toList();
     }
 
-    public ClienteResponseDto buscarClientePorId(Long id){
+    public ClienteResponseDto buscarUsuarioPorId(Long id){
         return usuarioRepository.findById(id).map(clienteMapper::toClienteResponseDto)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Cliente com " + id + " não encontrado"));
     }
