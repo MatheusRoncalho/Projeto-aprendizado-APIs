@@ -1,17 +1,17 @@
 package com.roncalho.inventory_control.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.util.Set;
 
 @Entity
-@Table(name = "produtos")
+@Table(name = "produto")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Produto {
 
     @Id
@@ -26,4 +26,7 @@ public class Produto {
 
     @Column(nullable = false)
     private int quantidade;
+
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
+    private Set<Item_pedido> itens;
 }
