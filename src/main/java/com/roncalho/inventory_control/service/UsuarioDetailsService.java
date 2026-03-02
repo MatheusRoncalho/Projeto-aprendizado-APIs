@@ -3,6 +3,7 @@ package com.roncalho.inventory_control.service;
 import com.roncalho.inventory_control.exceptions.RecursoNaoEncontradoException;
 import com.roncalho.inventory_control.model.Usuario;
 import com.roncalho.inventory_control.repository.UsuarioRepository;
+import com.roncalho.inventory_control.security.UsuarioDetails;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,10 +24,6 @@ public class UsuarioDetailsService implements UserDetailsService {
         Usuario usuario = usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
 
-        return User.builder()
-                .username(usuario.getEmail())
-                .password(usuario.getSenha())
-                .roles(String.valueOf(usuario.getRole()))
-                .build();
+        return new UsuarioDetails(usuario);
     }
 }
