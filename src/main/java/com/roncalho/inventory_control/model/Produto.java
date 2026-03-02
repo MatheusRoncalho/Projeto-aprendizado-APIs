@@ -28,5 +28,5 @@ public class Produto {
     private int quantidade;
 
     @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
-    private Set<Item_pedido> itens;
+    private Set<ItemPedido> itens;
 }
