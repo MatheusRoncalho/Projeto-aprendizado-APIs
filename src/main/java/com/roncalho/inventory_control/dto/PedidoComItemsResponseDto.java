@@ -9,6 +9,6 @@ public record PedidoComItemsResponseDto(
         String nomeUsuario,
         LocalDateTime dataPedido,
         BigDecimal total,
-        List<ItemPedidoDto> itemPedido
+        List<ItemPedidoResponseDto> itensPedido
 ) {
 }

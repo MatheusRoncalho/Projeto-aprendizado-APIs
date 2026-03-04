@@ -1,11 +1,17 @@
 package com.roncalho.inventory_control.model;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 import java.math.BigDecimal;
 
 @Entity
 @Table(name = "item_pedido")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ItemPedido {
 
     @Id
