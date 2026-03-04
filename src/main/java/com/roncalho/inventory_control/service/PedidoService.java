@@ -40,8 +40,12 @@ public class PedidoService {
     }
 
     public PedidoResponseDto savePedido(Long usuarioId) {
-        Usuario usuario = usuarioRepository.getReferenceById(usuarioId);
-        Pedido pedido = Pedido.builder().usuario(usuario).build();
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuario Não encontrado"));
+        Pedido pedido = Pedido.builder()
+                .usuario(usuario)
+                .total(BigDecimal.ZERO)
+                .build();
         pedidoRepository.save(pedido);
         return pedidoMapper.ToPedidoResponseDto(pedido);
     }
@@ -58,10 +62,11 @@ public class PedidoService {
                 .toList();
     }
 
-    //FAZER ESSE METODO PARA ENCONTRAR O PEDIDO POR ID DE TAL USUARIO ID QUE VAI SER PASSADO
-    public List<PedidoResponseDto> findPedidoComItensByIdByUsuarioId(Long pedidoId, Long usuarioId) {
-        pedidoRepository;
-        return;
+    //FAZER ESSE METODO PARA ENCONTRAR O PEDIDO CMO ITENS POR ID DE TAL USUARIO ID QUE VAI SER PASSADO
+    public PedidoComItemsResponseDto findPedidoComItensByIdByUsuarioId(Long pedidoId, Long usuarioId) {
+        Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
+        return pedidoMapper.toPedidoComItemsResponseDto(pedido);
     }
 
     @Transactional
@@ -103,7 +108,7 @@ public class PedidoService {
         pedidoRepository.delete(pedido);
     }
 
-    public PedidoComItemsResponseDto findPedidoComItemsById(Long idPedido) {
-
-    }
+//    public PedidoComItemsResponseDto findPedidoComItemsById(Long pedidoId) {
+//
+//    }
 }

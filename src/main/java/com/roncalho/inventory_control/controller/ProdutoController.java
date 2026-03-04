@@ -25,7 +25,7 @@ public class ProdutoController {
     @PostMapping
     public ResponseEntity<ProdutoResponseDto> saveProduto(@Valid @RequestBody ProdutoCreateDto createDto) {
         ProdutoResponseDto responseDto = produtoService.saveProduto(createDto);
-        URI location = URI.create("/produtos/"+responseDto.id());
+        URI location = URI.create("/produto/"+responseDto.id());
         return ResponseEntity.created(location).body(responseDto);
     }
 

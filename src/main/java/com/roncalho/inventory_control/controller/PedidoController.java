@@ -30,21 +30,24 @@ public class PedidoController {
         return ResponseEntity.created(location).body(responseDto);
     }
 
+    //B.O / add item em outro carrinho que não seja o seu (só pode adicionar no seu carrinho)
     @PostMapping("/{pedidoId}/produto/{produtoId}")
-    public ResponseEntity<?> addItemPedido(@PathVariable Long pedidoId, @PathVariable Long produtoId, @RequestParam Integer quantidade) {
+    public ResponseEntity<?> addItemPedido(@PathVariable Long pedidoId, @PathVariable Long produtoId, @RequestParam Integer quantidade, Authentication authentication) {
         ItemPedidoResponseDto responseDto = pedidoService.addItemPedido(pedidoId, produtoId, quantidade);
         URI location = URI.create(pedidoId+"/produto/"+responseDto.id());
         return ResponseEntity.created(location).body(responseDto);
     }
 
+    //B.O / delete item em outro carrinho que não seja o seu (só pode deletar no seu carrinho)
     @DeleteMapping("/{pedidoId}/produto/{itemPedidoId}")
-    public ResponseEntity<?> deleteItemPedido(@PathVariable Long pedidoId, @PathVariable Long itemProdutoId) {
-        pedidoService.deleteItemPedido(pedidoId, itemProdutoId);
+    public ResponseEntity<?> deleteItemPedido(@PathVariable Long pedidoId, @PathVariable Long itemPedidoId, Authentication authentication) {
+        pedidoService.deleteItemPedido(pedidoId, itemPedidoId);
         return ResponseEntity.noContent().build();
     }
 
+    //B.O / delete pedidos que sejam apenas seu
     @DeleteMapping("/{pedidoId}")
-    public ResponseEntity<?> deletePedido(@PathVariable Long pedidoId) {
+    public ResponseEntity<?> deletePedido(@PathVariable Long pedidoId, Authentication authentication) {
         pedidoService.deletePedido(pedidoId);
         return ResponseEntity.noContent().build();
     }
@@ -69,7 +72,6 @@ public class PedidoController {
     }
 
     @GetMapping("/meus-pedidos")
-    @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<?> findMeusPedidos(Authentication authentication) {
         Long usuarioId = ((UsuarioDetails) authentication.getPrincipal()).getId();
         return ResponseEntity.ok(pedidoService.findAllPedidosByUsuarioId(usuarioId));
