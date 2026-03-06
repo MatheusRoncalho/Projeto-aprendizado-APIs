@@ -62,10 +62,9 @@ public class PedidoService {
                 .toList();
     }
 
-    //FAZER ESSE METODO PARA ENCONTRAR O PEDIDO CMO ITENS POR ID DE TAL USUARIO ID QUE VAI SER PASSADO
     public PedidoComItemsResponseDto findPedidoComItensByPedidoIdByUsuarioId(Long pedidoId, Long usuarioId) {
         Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
-                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido do usuario não encontrado"));
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         return pedidoMapper.toPedidoComItemsResponseDto(pedido);
     }
 
@@ -76,8 +75,8 @@ public class PedidoService {
     }
 
     @Transactional
-    public ItemPedidoResponseDto addItemPedido(Long pedidoId, Long produtoId, Integer quantidade) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+    public ItemPedidoResponseDto addItemPedido(Long pedidoId, Long produtoId, Integer quantidade, Long usuarioId) {
+        Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
@@ -96,8 +95,8 @@ public class PedidoService {
     }
 
     @Transactional
-    public void deleteItemPedido(Long pedidoId, Long itemPedidoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+    public void deleteItemPedido(Long pedidoId, Long itemPedidoId, Long usuarioId) {
+        Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         ItemPedido itemPedido = itemPedidoRepository.findByIdAndPedidoId(itemPedidoId, pedidoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("item não encontrado"));
@@ -108,13 +107,9 @@ public class PedidoService {
         itemPedidoRepository.delete(itemPedido);
     }
 
-    public void deletePedido(Long pedidoId) {
-        Pedido pedido = pedidoRepository.findById(pedidoId)
+    public void deletePedido(Long pedidoId, Long usuarioId) {
+        Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         pedidoRepository.delete(pedido);
     }
-
-//    public PedidoComItemsResponseDto findPedidoComItemsById(Long pedidoId) {
-//
-//    }
 }
