@@ -3,6 +3,7 @@ package com.roncalho.inventory_control.service;
 import com.roncalho.inventory_control.dto.ItemPedidoResponseDto;
 import com.roncalho.inventory_control.dto.PedidoComItemsResponseDto;
 import com.roncalho.inventory_control.dto.PedidoResponseDto;
+import com.roncalho.inventory_control.exceptions.QuantidadeIndisponivelException;
 import com.roncalho.inventory_control.exceptions.RecursoNaoEncontradoException;
 import com.roncalho.inventory_control.mappers.ItemPedidoMapper;
 import com.roncalho.inventory_control.mappers.PedidoMapper;
@@ -80,6 +81,9 @@ public class PedidoService {
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         Produto produto = produtoRepository.findById(produtoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Produto não encontrado"));
+        if (quantidade > produto.getQuantidade()) {
+            throw new QuantidadeIndisponivelException("Quantidade indisponível em estoque");
+        }
         ItemPedido itemPedido = ItemPedido.builder()
                 .pedido(pedido)
                 .produto(produto)
