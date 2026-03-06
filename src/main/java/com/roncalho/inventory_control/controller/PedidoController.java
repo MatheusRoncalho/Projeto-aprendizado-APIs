@@ -58,17 +58,16 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.findAllPedidos());
     }
 
-    @GetMapping("/cliente/{id}")
+    @GetMapping("/cliente/{clienteId}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> findAllPedidosByUsuarioId(@Valid @PathVariable Long id) {
-        return ResponseEntity.ok(pedidoService.findAllPedidosByUsuarioId(id));
+    public ResponseEntity<?> findAllPedidosByUsuarioId(@Valid @PathVariable Long clienteId) {
+        return ResponseEntity.ok(pedidoService.findAllPedidosByUsuarioId(clienteId));
     }
 
-    //Mudar, buscar o pedido por id de tal usuario por id
-    @GetMapping("{pedidoId}/cliente/{id}")
+    @GetMapping("{pedidoId}/items")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<?> findPedidoComItensByIdByUsuarioId(@Valid @PathVariable Long pedidoId, @PathVariable Long id) {
-        return ResponseEntity.ok(pedidoService.findAllPedidosByUsuarioId(id));
+    public ResponseEntity<?> findPedidoComItensByPedidoId(@Valid @PathVariable Long pedidoId) {
+        return ResponseEntity.ok(pedidoService.findPedidoComItensByPedidoId(pedidoId));
     }
 
     @GetMapping("/meus-pedidos")
@@ -77,7 +76,7 @@ public class PedidoController {
         return ResponseEntity.ok(pedidoService.findAllPedidosByUsuarioId(usuarioId));
     }
 
-    //Mudar, colocar findPedidoComItensByIdByUsuarioId
+    //Mudar, colocar findPedidoComItensByPedidoIdByUsuarioId
     @GetMapping("/meus-pedidos/{pedidoId}")
     @PreAuthorize("hasRole('CLIENTE')")
     public ResponseEntity<?> findMeuPedidoComItensById(Authentication authentication) {

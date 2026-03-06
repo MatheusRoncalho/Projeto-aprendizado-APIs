@@ -63,8 +63,14 @@ public class PedidoService {
     }
 
     //FAZER ESSE METODO PARA ENCONTRAR O PEDIDO CMO ITENS POR ID DE TAL USUARIO ID QUE VAI SER PASSADO
-    public PedidoComItemsResponseDto findPedidoComItensByIdByUsuarioId(Long pedidoId, Long usuarioId) {
+    public PedidoComItemsResponseDto findPedidoComItensByPedidoIdByUsuarioId(Long pedidoId, Long usuarioId) {
         Pedido pedido = pedidoRepository.findByIdAndUsuarioId(pedidoId, usuarioId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido do usuario não encontrado"));
+        return pedidoMapper.toPedidoComItemsResponseDto(pedido);
+    }
+
+    public PedidoComItemsResponseDto findPedidoComItensByPedidoId(Long pedidoId) {
+        Pedido pedido = pedidoRepository.findById(pedidoId)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Pedido não encontrado"));
         return pedidoMapper.toPedidoComItemsResponseDto(pedido);
     }
